@@ -20,3 +20,9 @@
 #CMake bin directory
 bin/
 
+#LaTeX files
+doc/*.aux
+doc/*.log
+doc/*.out
+doc/*.gz
+
