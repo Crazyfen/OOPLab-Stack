@@ -16,3 +16,7 @@
 *.exe
 *.out
 *.app
+
+#CMake bin directory
+bin/
+
