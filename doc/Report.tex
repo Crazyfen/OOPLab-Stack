@@ -1,0 +1,65 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[T2A]{fontenc}  %поддержка кириллицы в ЛаТеХ
+\addtolength{\hoffset}{-1.7mm} % горизонтальное смещение всего текста как целого
+\usepackage[utf8]{inputenc}  %По умолчанию кодировка KOI8 для *nix-систем
+\usepackage[english,russian]{babel} %определение языков в документе
+\usepackage{amssymb,amsmath,amsfonts,latexsym,mathtext} %расширенные наборы
+  % математических символов
+\usepackage{cite}  %"умные" библиографические ссылки
+%(сортировка и сжатие)
+\usepackage{indentfirst} %делать отступ в начале параграфа
+\usepackage{enumerate}  %создание и автоматическая нумерация списков
+\usepackage{tabularx}  %продвинутые таблицы
+%\usepackage{showkeys}  %раскомментируйте, чтобы в документе были видны
+%ссылки на литературу, рисунки и таблицы
+\usepackage[labelsep=period]{caption} %заменить умолчальное разделение ':' на '.'
+% в подписях к рисункам и таблицам
+%\usepackage[onehalfspacing]{setspace} %"умное" расстояние между строк - установить
+% 1.5 интервала от нормального, эквивалентно
+ \renewcommand{\baselinestretch}{1.24}
+\usepackage{graphicx} %разрешить включение PostScript-графики
+\graphicspath{{Images/}} %относительный путь к каталогу с рисунками,это может быть мягкая ссылка
+\usepackage{listings}
+
+
+\RequirePackage{caption}
+\DeclareCaptionLabelSeparator{defffis}{ -- }
+\captionsetup{justification=centering,labelsep=defffis}
+
+\usepackage{geometry} %способ ручной установки полей
+\geometry{top=2cm} %поле сверху
+\geometry{bottom=2cm} %поле снизу
+\geometry{left=2cm} %поле справа
+\geometry{right=1cm} %поле слева
+
+\usepackage[colorlinks,linkcolor=blue]{hyperref}%гиперссылки в тексте
+\newcommand{\tocsecindent}{\hspace{7mm}}% отступ для введения
+
+\makeatletter
+\bibliographystyle{unsrt} %Стиль библиографических ссылок БибТеХа - нумеровать
+%в порядке упоминания в тексте
+\renewcommand{\@biblabel}[1]{#1.}
+\makeatother
+
+\begin{document}
+
+%Титулный лист
+\input{TitleList}
+
+
+\setcounter{page}{2} % начать нумерацию с номера три
+\renewcommand{\figurename}{Рисунок}
+
+
+\newpage
+\input{Task}
+
+%\input{FunctionsDescription}
+
+\input{LibrariesDescription}
+
+\input{Listing}
+
+\input{Example}
+
+\end{document}
