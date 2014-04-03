@@ -1,428 +1,496 @@
-//#include "stdafx.h"
-#include "stdio.h"
-#include "string.h"
-#include "stdlib.h"
-#include "conio.h"
-
-struct stack{
-	char *mean;
-	stack *next;
-	stack *priv;};
-
-typedef stack *pstack;
-pstack begin, end, pol;
-
-typedef char *pchar;
-char s[128];
-	stack* create(void);
-	stack* add_elem_left(pstack &begin, char *s);
-	stack* add_elem_right(pstack &end, char *s);
-	void left_right(pstack &begin);
-	void right_left(pstack &end);
-	stack* pull_left(pstack &begin);
-	stack* pull_right(pstack &end);
-	int amount(pstack &begin);
-	void search(pstack &begin, char *s);
-	void duble(pstack &begin);
-	void del(pstack &begin);
-	void writeinfile(pstack &begin);
-	stack* readfile(pstack &begin);
-	stack* revers(pstack &begin, pstack &end);
-
-
-	void main(){
-		int k;
-		for(;;){
-			system("cls");
-printf("1. Cozdat konteiner.\n");                               //Распечатка пунктов меню
-printf("2. Dobavit element sleva.\n");
-printf("3. Dobavit element sprava.\n");
-printf("4. Iterator sleva napravo.\n");
-printf("5. Iterator sprava nalevo.\n");
-printf("6. izvlechenie sleva.\n");
-printf("7. izvlechenie sprava.\n");
-printf("8. chislo elementov.\n");
-printf("9. poisk.\n");
-printf("10. udalenie dubley.\n");
-printf("11. udalenie konteinera.\n");
-printf("12. revers.\n");
-printf("13. zapis v file.\n");
-printf("14. chenie iz file.\n");
-printf("15. vixod.\n");
-printf("Vvedite nomer pynkta:");
-scanf("%d",&k);  
-
-switch (k) {  
-	case 1: {
-		system("cls");
-		create();
-		break;}
-	case 2: {
-		system("cls");
-		printf("vvedite znachenie\n");
-scanf("%s", &s);
-		add_elem_left(begin, s);
-		break;}
-	case 3:{
-		system("cls");
-		printf("vvedite znachenie\n");
-scanf("%s", &s);
-		add_elem_right(end, s);
-		break;}
-	case 4:{
-		system("cls");
-		left_right(begin);
-		break;}
-	case 5:{
-		system("cls");
-		right_left(end);
-		break;}
-	case 6:{
-		system("cls");
-		pull_left(begin);
-		break;}
-	case 7:{
-		system("cls");
-		pull_right(end);
-		break;}
-	case 8:{
-		system("cls");
-		amount(begin);
-		break;}
-	case 9:{
-		system("cls");
-		printf("vvedite znachenie\n");				//задание ключа
-scanf("%s", &s);
-		search(begin, s);
-		break;}
-	case 10:{
-		system("cls");
-		duble(begin);
-		break;}
-	case 11:{
-		system("cls");
-		del(begin);
-		break;}
-	case 12:{
-		system("cls");
-		revers(begin, end);
-		break;}
-	case 13:{
-		system("cls");
-		writeinfile(begin);
-		break;}
-	case 14:{
-		system("cls");
-		readfile(begin);
-		break;}}
-
-if (k==15) break;
-getch();}}
-
-
-
-	stack* create(void)
+//#include <stdafx.h>
+#include <stdio.h>
+#include <conio.h>
+#include <stdlib.h>
+#include <string.h>
+//------------------------------------------------------------------------------
+struct stack
+{ 
+	char* mean;
+	stack* next;
+	stack* prev;
+};
+typedef stack* pstack; 
+pstack begin, end, pnt;
+bool flag=false;
+typedef char* pchar;
+char s[120];
+//объявляем все используемые в программе функции:   
+	stack* Create(void);             //создание контейнера
+	void Delete(pstack &begin);      //удаление контейнера
+	stack* AddLeftElement(pstack &begin, char* s);  //добавление элемента в начало
+	stack* AddRightElement(pstack &end, char* s);   //добавление элемента в конец
+	stack* Search(pstack &begin, char *s);      //поиск элемента
+	stack* ExtractLeft(pstack &begin);      //извлечение элемента из начала
+	stack* ExtractRight(pstack &end);		//извлечение элемента из конца
+	void IteratorFromLeft(pstack &begin);   //прямой итератор
+	void IteratorFromRight(pstack &end);	  //обратный итератор
+	void ClearDubles(pstack &begin, pstack &end);		//удаление дублирующих элементов
+	int NumberOfElements(pstack &begin);  //подсчет элементов в контейнере 
+	stack* Revers(pstack &begin, pstack &end);  //реверс контейнера
+	void WriteInFile(pstack &begin);		//запись контейнера в файл
+	stack* ReadFromFile(pstack &begin);		//чтение контейнера из файла 
+//------------------------------------------------------------------------------
+void main() 
+{ 
+	int k=15;
+	while (k!=0)	//выводим меню пользователя
 	{
-begin=new stack;	
-end=new stack;
-pol=new stack;
-	if (pol!=NULL) 
-		printf("konteyner sozdan\n");
-	else
-		printf("error");
+		system("cls");
+		printf ("1. Sozdat' konteiner \n");
+		printf ("2. Unichtozhenie konteinera \n");
+		printf ("3. Dobavit' element sleva \n");
+		printf ("4. Dobavit' element sprava \n");
+		printf ("5. Poisk elementa \n");
+		printf ("6. Izvlechenie elementa sleva \n");
+		printf ("7. Izvlechenie elementa sprava \n");
+		printf ("8. Iterator sleva napravo \n");
+		printf ("9. Iterator sprava nalevo \n");
+		printf ("10. Udalenie dublei \n");
+		printf ("11. Kolichestvo elementov v konteinere \n");
+		printf ("12. Revers konteinera \n");
+		printf ("13. Zapis' v fail \n");
+		printf ("14. Chtenie iz faila \n"); 
+		printf ("0. Otmena \n");	//выход из меню при вводе 0
+		printf ("Dlya prodolzheniya viberite nomer punkta: ");
+		scanf("%d",&k);
 
-pol->mean=NULL;
-pol->next=NULL;
-pol->priv=NULL;
-begin=pol;
-end=pol;
-	return begin;
+		switch(k) 
+		{		//каждой функции соответствует свой номер:
+			case 1: 
+				{
+					begin=new stack;
+					begin=NULL;
+					begin=Create();
+					getch();
+					flag=true;
+					break;
+
+				}
+			case 2: 
+				{
+					Delete(begin);
+					getch();
+					flag=false;
+					break;
+				}
+			case 3:
+				{
+					printf ("Vvedite znachenie dobavlyzemogo elementa: \n");
+					scanf ("%s", &s);
+					AddLeftElement(begin, s);
+					getch();
+					break;
+				}
+			case 4: 
+				{
+					printf ("Vvedite znachenie dobavlyzemogo elementa: \n");
+					scanf ("%s", &s);
+					AddRightElement(end, s);
+					getch();
+					break;
+				}
+			case 5:
+				{
+					printf ("Vvedite znachenie raziskivaemogo elementa: \n");
+					scanf ("%s", &s);
+					Search(begin, s);
+					getch();
+					break;
+				}
+			case 6: 
+				{
+					ExtractLeft(begin);
+					getch();
+					break;
+				}
+			case 7:
+				{
+					ExtractRight(end);
+					getch();
+					break;
+				}
+			case 8: 
+				{
+					IteratorFromLeft(begin);
+					getch();
+					break;
+				}
+			case 9: 
+				{
+					IteratorFromRight(end);
+					getch();
+					break;
+				}
+			case 10: 
+				{
+					ClearDubles(begin, end);
+					getch();
+					break;
+				}
+			case 11: 
+				{
+					NumberOfElements(begin);
+					getch();
+					break;
+				}
+			case 12: 
+				{
+					Revers(begin, end);
+					getch();  
+					break;
+				}
+			case 13:
+				{
+					WriteInFile(begin);
+					getch();
+					break;
+				}
+			case 14:
+				{
+					ReadFromFile(begin);
+					getch();
+					break;
+				} 
+		}
 	}
-
-stack* add_elem_left(pstack &begin, char *s)
+}
+//------------------------------------------------------------------------------
+stack* Create(void)  //описание работы функции, создающей контейнер
+{	
+	pstack cont;
+	cont=NULL;
+	printf("Konteiner udachno sozdan \n");
+	return begin; 
+}  
+//------------------------------------------------------------------------------
+void Delete(pstack &begin) //описание работы функции, уничтожающей контейнер
 {
-	if(begin!=NULL){
-	int size;
-pstack str=new stack;
-if (str!=NULL) 
-		printf("element dobavlen\n");
-	else
-		printf("error");
-size=strlen(s);
-if(begin->mean==NULL)	{						//если элемент первый 	
-str=begin;
-str->mean=new char[size+1];		//выделение памяти под obj
-strcpy(str->mean, s);					//занесение значения в obj
-str->priv=NULL;				//заполнение полей
-str->next=NULL;}
-else {
-str->mean=new char[size+1];		//выделение памяти под obj
-strcpy(str->mean, s);					//занесение значения в obj
-str->next=begin;					//заполнение полей
-str->priv=NULL;
-begin->priv=str;
-begin=str;}
-return begin;
-	}
-	else printf("sozdayte konteuner");}
-
-stack* add_elem_right(pstack &end, char *s)
-	{
-		if(begin!=NULL){
-	int size;
-pstack str=new stack;
-if (str!=NULL) 
-		printf("element dobavlen\n");
-	else
-		printf("error");
-size=strlen(s);
-	if(begin->mean==NULL)				//если элемент первый 	
-	{
-		str=begin;
-		str->mean=new char[size+1];		//выделение памяти под obj
-		strcpy(str->mean, s);					//занесение значения в obj	
-		str->priv=NULL;		//заполнение полей
-		str->next=NULL;
-		end=str;
-	}
-	else
-	{
-		str->mean=new char[size+1];		//выделение памяти под obj
-		strcpy(str->mean, s);					//занесение значения в obj
-		str->next=NULL;					//заполнение полей
-		str->priv=end;
-		end->next=str;
-		end=str;
-	}
-	return end;
+	if(flag==false)      //проверка наличия контейнера
+		printf("Konteiner ne sozdan \n");   
+	else             
+	{                          
+		pstack dop=new stack; //выделение динамической памяти под новую переменную
+		dop=begin;
+		begin=dop->next;
+		delete dop;      //освобождение динамической памяти
+		if(begin!=NULL)
+		Delete(begin);   //рекурсивный вызов функции
+ 	}  	
+		printf("Udachno udaleno \n"); 
+}
+//------------------------------------------------------------------------------
+stack* AddLeftElement(pstack &begin, char *s)    //добавляет элемент в начало
+{
+	if(flag)
+	{                             
+		int size;
+		pstack str=new stack;  //выделение динамической памяти под новую переменную
+		size=strlen(s);
+		if (str!=NULL) 
+			printf("Element dobavlen \n");
+		else
+			printf("Error!");
+		if(begin==NULL)	//если элемент первый
+		{						 	
+			str->mean=new char[size+1];	    //выделение памяти
+			strcpy(str->mean, s);	     //копируем значение
+			str->prev=NULL;		   //заполнение полей
+			str->next=NULL;
+			begin=str;
+			end=begin;
 		}
-		else printf("sozdayte konteyner");}
-
-
-void left_right(pstack &begin)
-	{
-		if(begin!=NULL){
-pstack cur=new stack;
-cur=begin;
-while(cur!=NULL)			//пока не конец списка, распечатка 
+		else 
 		{
-		printf("%s\n", cur->mean);
-		cur=cur->next;
+			str->mean=new char[size+1];	    //выделение памяти
+			strcpy(str->mean, s);	   //копируем значение
+			str->next=begin;	  //заполнение полей
+			str->prev=NULL;
+			begin->prev=str;   
+			begin=str;
 		}
-		}
+		return begin;
 	}
-
-void right_left(pstack &end){
-	if(begin!=NULL){
-pstack cur=new stack;
-cur=end;
-	while(cur!=NULL)			//пока не конец списка, распечатка 
+	else printf("Konteiner ne sozdan \n");    
+}
+//------------------------------------------------------------------------------
+stack* AddRightElement(pstack &begin, char *s)    //добавляет элемент в конец
+{
+	if(flag)
+	{     
+		int size;
+		pstack str=new stack;  //выделение динамической памяти под новую переменную
+		size=strlen(s);
+		if (str!=NULL) 
+			printf("Element dobavlen \n");
+		else
+			printf("Error!");
+		if(begin==NULL)	//если элемент первый
+		{						 	
+			str->mean=new char[size+1];	    //выделение памяти
+			strcpy(str->mean, s);	     //копируем значение
+			str->prev=NULL;		   //заполнение полей
+			str->next=NULL;
+			end=str;
+			begin=str;
+		}
+		else 
 		{
-		printf("%s\n", cur->mean);
-		cur=cur->priv;
+			str->mean=new char[size+1];	    //выделение памяти
+			strcpy(str->mean, s);	   //копируем значение
+			str->next=NULL;	  //заполнение полей
+			str->prev=end;
+			end->next=str;
+			end=str;
 		}
-	}}
-
-stack* pull_left(pstack &begin)
-	{
-		if(begin!=NULL&&begin->priv!=NULL){
-pstack cur=new stack;
-cur=begin;
-	if(cur)
-		printf("%s", cur->mean);
-begin=cur->next;
-delete cur;
-begin->priv=NULL;
-return begin;
-		}
-		else printf("sozdayte konteyner, esli konteyner sozdan vvedite znachenie");}
-
-stack* pull_right(pstack &end)
-	{
-			if(begin!=NULL&&begin->next!=NULL){
-pstack cur=new stack;
-cur=end;
-	if(cur)
-		printf("%s", cur->mean);
-end=cur->priv;
-delete cur;
-end->next=NULL;
-return end;
+		return end;
+	}
+	else printf("Konteiner ne sozdan \n");    
+}
+//------------------------------------------------------------------------------
+stack* Search(pstack &begin, char *s)  //выясняет, есть ли в деке элемент
+{
+	if(begin!=NULL)		//есть ли элементы
+	{	
+		int a=0;
+		pstack step=new stack;   //выделяем память
+		step=begin;
+		while(step!=NULL)   //пробегаем по деку
+		{
+			if(strcmp(step->mean, s)==0)	 //условие совпадения строк
+			{	
+				printf("Znachenie naideno \n");
+				a++;
+				return step;
+				break;
 			}
-else printf("sozdayte konteyner, esli konteyner sozdan vvedite znachenie");
+			step=step->next;
+		}
+		if (a==0)
+			printf("Znachenie ne naideno \n");
+	}
+	else("Konteiner ne sozdan \n");
 }
-
-int amount(pstack &begin)
+//------------------------------------------------------------------------------
+stack* ExtractLeft(pstack &begin)     //извлечение элемента из начала
 {
-	int sum=0;
-pstack cur=new stack;
-cur=begin;
-	while(cur!=NULL)
+	if(begin!=NULL)		//есть ли элементы
 	{
-		sum++;
-		cur=cur->next;
+		pstack extr=new stack;   //выделяем память
+		extr=begin;
+		if(extr)						 //если не ноль
+			printf("%s", extr->mean);   //выводим значение первого элемента
+		begin=extr->next;  
+		delete extr;       //очищаем память
+		begin->prev=NULL;
+		return begin;
 	}
-printf("%d", sum);
-return sum;
+	else 
+	printf("Konteiner ne sozdan \n");
 }
-
-void search(pstack &begin, char *s)
+//------------------------------------------------------------------------------
+stack* ExtractRight(pstack &end)     //извлечение элемента из конца
 {
-	if(begin!=NULL){
-	int d=0;
-	pstack cur=new stack;
-	cur=begin;
-cur=begin;
-	while(cur!=NULL)
+	if(begin!=NULL)			//есть ли элементы
 	{
-		if(strcmp(cur->mean, s)==0)			//если строки совпадают
-				d++;
-		cur=cur->next;
+		pstack extr=new stack;   //выделяем память
+		extr=end;
+		if(extr)						//если не ноль
+			printf("%s", extr->mean);   //выводим значение последнего элемента
+		end=extr->prev;
+		delete extr;                 //очищаем память
+		end->next=NULL;
+		return end;
 	}
-		if(d!=0)
-				printf("znachenie naydeno");
-					else printf("znachenie ne naydeno");
-	}
-	else("sozdayte konteyner");}
-
-void duble(pstack &begin)
+	else 
+	printf("Konteiner ne sozdan \n");
+}
+//------------------------------------------------------------------------------
+void IteratorFromLeft(pstack &begin)		//итератор от начала к концу
 {
-	if(begin!=NULL){
-	char val[128];
-	pstack cur=new stack;
-	pstack point=new stack;
-	for (point=begin; point!=end; point=point->next)
-	{
-		strcpy(val, point->mean);											//установка значения
-		for (cur=point->next; cur!=NULL; cur=cur->next)		//просмотр всех элементов
+	if(begin!=NULL)			//есть ли элементы
+	{                     
+		pstack step=new stack;
+		step=begin;
+		while(step!=NULL)  //пока не наткнемся на ноль
 		{
-			if (strcmp(cur->mean, val)==0 && cur->next==NULL)			//исключение узла из списка
+			printf("%s \n", step->mean);    //вывод на экран дека
+			step=step->next;  //проходим от начала до конца
+		}
+	}
+	else printf("Konteiner ne sozdan \n");   
+}
+//------------------------------------------------------------------------------
+void IteratorFromRight(pstack &end)		//итератор от конца к началу
+{
+	if(begin!=NULL)			//есть ли элементы
+	{
+		pstack step=new stack;
+		step=end;
+		while(step!=NULL)   //пока не наткнемся на ноль
+		{ 
+			printf("%s \n", step->mean);  //вывод на экран дека
+			step=step->prev;     //проходим с конца в начало
+		}
+	}
+	else printf("Konteiner ne sozdan \n");
+}
+//------------------------------------------------------------------------------
+void ClearDubles(pstack &begin, pstack &end)	//очисткf повторяющихся элементов
+{
+	if(begin!=NULL)		//есть ли элементы
+	{      
+		pstack ptr=new stack;
+		pstack dop=new stack;
+		for (dop=begin; dop!=end; dop=dop->next)  //обходим дек
+		{
+			for (ptr=dop->next; ptr!=NULL; ptr=ptr->next)  //еще раз проходим
+						//по всему списку, сравнивая каждый элемент с value
 			{
-				cur=cur->priv;
-				end->priv=NULL;
-				cur->next=NULL;
-				end->mean=NULL;
-				end=cur;
-			}
-else
-			if (strcmp(cur->mean, val)==0)
-			{
-				cur=cur->priv;
-				cur->next=cur->next->next;
-				cur=cur->next;
-				cur->priv=cur->priv->priv;
+				if (strcmp(ptr->mean, dop->mean)==0 && ptr->next==NULL)	//если
+									  //значения совпали и при этом элемент 
+										  //сравнения оказался последним
+				{
+					ptr=ptr->prev;			//удаление
+					ptr->next=NULL;
+					end=ptr;
+				}
+				else 
+					if (strcmp(ptr->mean, dop->mean)==0)   //если значения 
+													//совпали
+					{
+						ptr=ptr->prev;				//удаление найденного
+						ptr->next=ptr->next->next;
+						ptr=ptr->next;
+						ptr->prev=ptr->prev->prev;
+						ptr=ptr->prev;
+					}
 			}
 		}
 	}
-	}
-else("sozdayte konteyner");}
-
-
-void del(pstack &begin)
-{
-	if(begin==NULL)
-		printf("konteynera netu\n");
-	else
-	{
-pstack cur=new stack;
-cur=begin;
-begin=cur->next;
-delete cur;
-	if(begin!=NULL)
-		del(begin);
-	}			//рекурсивный вызов функции
+	else printf("Konteiner ne sozdan \n");   
 }
-
-stack* revers(pstack &begin, pstack &end)
+//------------------------------------------------------------------------------
+int NumberOfElements(pstack &begin)  //функция подсчитывает элементы в контейнере 
 {
-	if(begin!=NULL){
-int sum=0;
-pstack cur=new stack;
-cur=begin;
-	while(cur!=NULL)			//вычисление длины списка
+	if(begin!=NULL)			//есть ли элементы
 	{
-		sum++;
-		cur=cur->next;
-	}
-int  t;
-char s[128];
-t=sum/2;					//определение количества операций
-pstack curl=new stack;;
-pstack curr=new stack;
-curl=begin;
-curr=end;
-		while(t!=0)			//реверс дека
+		int sum=0;           //сюда будет записываться количество элементов
+		pstack pnt=new stack;    //выделяем динамическую память
+		pnt=begin;			 //устанавливаем курсор на начало контейнера 
+		while(pnt!=NULL)	 //проходим до конца контейнера
 		{
-			strcpy(s, curr->mean);
-			strcpy(curr->mean, curl->mean);
-			strcpy(curl->mean, s);
-			curl=curl->next;
-			curr=curr->priv;
+			sum++;			 //подсчитываем элементы
+			pnt=pnt->next;
+		}
+		printf("%d", sum);   //выводим получившееся количество
+		return sum;
+	}
+	else 
+		if (begin==NULL && flag==true) 
+			printf("Net elementov v konteinere \n");
+	else 
+		printf("Konteiner ne sozdan \n");
+}
+//------------------------------------------------------------------------------
+stack* Revers(pstack &begin, pstack &end)   //реверс контейнера
+{
+	if(begin!=NULL)			//есть ли элементы
+	{
+		int sum=0;
+		pstack pnt=new stack;
+		pnt=begin;
+		while(pnt!=NULL)	//вычисляем длину списка
+		{
+			sum++;
+			pnt=pnt->next;
+		}					//в sum хранится количество элементов контейнера
+		int  t;
+		char s[120];
+		t=sum/2;		     //определение количества операций
+		pstack pntBeg=new stack;
+		pstack pntEnd=new stack;
+		pntBeg=begin;
+		pntEnd=end;
+		while(t!=0)			  //реверс дека
+		{
+			strcpy(s, pntEnd->mean);             //меняем местами
+			strcpy(pntEnd->mean, pntBeg->mean);  //данные в 1х и последних
+			strcpy(pntBeg->mean, s);			 //элементах
+			pntBeg=pntBeg->next;
+			pntEnd=pntEnd->prev;
 			t--;
 		}
-		return begin;}
-	else printf("sozdayte konteyner");}
+		return begin;
+	}
+	else printf("Konteiner ne sozdan /n");
+}
 
-void writeinfile(pstack &begin){
-	if(begin!=NULL){
-	int n;
-pstack cur=new stack;
-cur=begin;						//установление указателя на первый элемент
-FILE *file = fopen("C:\\QQQ.txt","wb");
-	if (file==NULL) 
-		printf("Faila nety.");			//Ошибка открытия файла
-	while(cur!=NULL)
+//------------------------------------------------------------------------------
+void WriteInFile(pstack &begin)   //записываем контейнер в файл
+{
+	if(begin!=NULL)			//есть ли элементы
 	{
-		n=strlen(cur->mean);		//вычисление длины строки
-		fprintf(file,"%d",n);			//занесение в файл длины строки
-		fputs(cur->mean, file);			//занесение строки
-		cur=cur->next;
+		int str;
+		pstack pnt=new stack;
+		pnt=begin;						//установление указателя на первый элемент
+		FILE *file;
+		file= fopen("Proba.txt","wb");
+		if (file==NULL) 
+			printf("Faila net \n");			//Ошибка открытия файла
+		while(pnt!=NULL)
+		{
+			str=strlen(pnt->mean);		//вычисление длины строки
+			fprintf(file,"%d",str);		//занесение в файл длины строки
+			fputs(pnt->mean, file);		//занесение строки
+			pnt=pnt->next;
+		}
+		fputs("end",file);
+		fclose(file);			//закрываем файл
 	}
-	fputs("3end",file);
-fclose(file);
-	}
-	else printf("sozdayte konteyner");}
-
-
-stack* readfile(pstack &begin){
-	int size;
-	int n=0;
-char s[128];
-begin=new stack;	
-end=new stack;
+	else printf("Konteiner ne sozdan \n");
+}
+//------------------------------------------------------------------------------
+stack* ReadFromFile(pstack &begin)    //считываем контейнер из файла 
+{
+	int size;           //размер строки
+	int n=0;            //номер элемента
+	char s[120];
+	size=strlen(s);
+	begin=new stack;	
+	end=new stack;
 	FILE *file;
-	file = fopen("C:\\QQQ.txt","rb");	            //Открытие файла
+	file = fopen("Proba.txt","rb");	   //открытие файла
 	if (file==NULL) 
-		printf("Faila nety.");			//Ошибка открытия файла
-									
-fseek(file,0,SEEK_SET);						//Передвижка указателя на начало файла
+		printf("Faila net /n");			//ошибка открытия файла
+	fseek(file,0,SEEK_SET);			//передвижка указателя на начало файла
 	for(;;)
 	{				
-		fgets(s,size+1,file);								//Считывание строки из файл
-		if (strcmp(s,"end")==0) break;			//если конец файла
-
-		if (n==0)								//если элемент первый
+		fgets(s,size+1,file);		//считывание строки из файла
+		if (strcmp(s,"end")==0)     //если конец файла
+			break;						
+		if (n==0)						//если элемент первый
 		{				
-			pstack cur=new stack;				//создание нового узла
-			cur->mean=new char;				//выделение памяти под obj
-			strcpy(cur->mean, s);					//занесение значения в obj
-			cur->next=NULL;
-			cur->priv=NULL;
-			begin=cur;
-			end=cur;
+			pstack pnt=new stack;			//создание нового узла
+			pnt->mean=new char;			//выделение памяти 
+			strcpy(pnt->mean, s);		//занесение значения 
+			pnt->next=NULL;
+			pnt->prev=NULL;
+			begin=pnt;
+			end=pnt;
 			n++;
 		}
 		else
 		{
-			pstack cur=new stack;				//создание нового узла
-			cur->mean=new char;				//выделение памяти под obj
-			strcpy(cur->mean, s);					//занесение значения в obj
-			cur->priv=end;
-			end->next=cur;
-			end=cur;
+			pstack pnt=new stack;			//создание нового узла
+			pnt->mean=new char;			//выделение памяти 
+			strcpy(pnt->mean, s);		//занесение значения 
+			pnt->prev=end;
+			end->next=pnt;
+			end=pnt;
 			end->next=NULL;
 		}
 	}
-fclose(file);								//Закрытие файла
-return begin;
+	fclose(file);	     //закрытие файла
+	return begin;
 }
